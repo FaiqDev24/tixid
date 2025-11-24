@@ -40,7 +40,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @if (Auth::check() && Auth::user()->role == 'admin')
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Dashboard</a>
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a data-mdb-dropdown-init class="nav-link dropdown-toggle" href="#"
@@ -77,7 +77,7 @@
                             <a class="nav-link" href="{{ route('cinemas.list') }}">Bioskop</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Tiket</a>
+                        <a class="nav-link" href="{{ route('tickets.index') }}">Tiket</a>
                         </li>
                     @endif
                 </ul>
@@ -108,6 +108,9 @@
 
     {{-- CDN datatable --}}
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+    {{-- CDN Chartjs --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- CDN --}}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"

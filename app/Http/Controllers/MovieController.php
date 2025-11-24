@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,6 +19,15 @@ class MovieController extends Controller
     {
         $movies = Movie::all();
         return view('admin.movie.index', compact('movies'));
+    }
+
+    public function chart() {
+        $filmActive = Movie::where('actived', 1)->count(); // yang diperlukan hanya jumlahnya saja jadi pakai count
+        $filmNonActive = Movie::where('actived', 0)->count();
+        $data = [$filmActive, $filmNonActive];
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
     public function datatables()
@@ -245,13 +255,19 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
-        $movie = Movie::find($id);
-        $deleteData = $movie->delete();
-        if ($deleteData) {
-            return redirect()->route('admin.movies.index')->with('success', 'Berhasil menghapus data!');
-        } else {
-            return redirect()->back()->with('error', 'Gagal, silakan coba lagi');
+        $schedules = Schedule::where('movie_id', $id)->count();
+        if ($schedules) {
+            return redirect()->route('admin.movies.index')->with('error', 'Tidak dapat menghapus data film! Data tertaut dengan jadwal tayang');
         }
+        $movie = Movie::find($id);
+
+        $filePath = storage_path('app/public/' . $movie->poster);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $movie->delete();
+        return redirect()->route('admin.movies.index')->with('success', 'Berhasil menghapus data!');
     }
 
     public function nonaktif($id)

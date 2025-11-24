@@ -5,6 +5,9 @@
         @if (Session::get('success'))
             <div class="alert alert-success">{{ Session::get('success') }}</div>
         @endif
+        @if (Session::get('error'))
+            <div class="alert alert-danger">{{ Session::get('error') }}</div>
+        @endif
         <div class="justify-content-end d-flex">
             <a href="{{ route('admin.movies.trash') }}" class="btn btn-primary me-2">Data Sampah</a>
             <a href="{{ route('admin.movies.export') }}" class="btn btn-secondary me-2">Export (.xlsx)</a>

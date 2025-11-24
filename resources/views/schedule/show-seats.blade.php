@@ -38,10 +38,20 @@
                         @if ($col == 7)
                             <div style="width: 50px;"></div>
                         @endif
-                        <div style="background: #112646; color:white; width :40px; height:35px; margin: 5px; border-radius: 5px; text-align:center; padding-top: 3px;"
+                        @php
+                            $seat = $row . "-" . $col;
+                        @endphp
+                        {{-- Cek apakah di array $seatsFormat ada daa kursi ini : in_array() --}}
+                        @if (in_array($seat, $seatsFormat))
+                            <div style="background: #eaeaea; color:black; width :40px; height:35px; margin: 5px; border-radius: 5px; text-align:center; padding-top: 3px;">
+                            <small><b>{{ $row }}-{{ $col }}</b></small>
+                            </div>
+                        @else
+                            <div style="background: #112646; color:white; width :40px; height:35px; margin: 5px; border-radius: 5px; text-align:center; padding-top: 3px;"
                             onclick="selectSeat('{{ $schedule->price }}', '{{ $row }}', '{{ $col }}', this)">
                             <small><b>{{ $row }}-{{ $col }}</b></small>
                         </div>
+                        @endif
                     @endforeach
                 </div>
             @endforeach

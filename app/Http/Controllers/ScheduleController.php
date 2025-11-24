@@ -6,6 +6,7 @@ use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Models\Cinema;
 use App\Models\Movie;
+use App\Models\Ticket;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ScheduleExport;
 use Yajra\DataTables\Facades\DataTables;
@@ -196,6 +197,21 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::where('id', $scheduleId)->with('cinema')->first();
         $hour = $schedule['hours'][$hourId];
-        return view('schedule.show-seats', compact('schedule', 'hour'));
+
+        // ambil data kursi dengan kriteria :
+        // 1. sudah dibayar(ada paid_date di tickte payment)
+        // 2. tiket dibeli di tgl dan jam sesuai dengan yang di klik
+        $seats = Ticket::where('schedule_id', $scheduleId)->whereHas('ticketPayment',
+        function($q) {
+            // ambil tanggal sekarang
+            $date = now()->format('Y-m-d');
+            //whereDate : mencari berdasarkan tanggal
+            $q->whereDate('paid_date', $date);
+        })->whereTime('hour_id', $hour)->pluck('rows_of_seats');
+        // pluck : mengambil data hanya satu kolom
+        $seatsFormat = array_merge(...$seats);
+        // ... : sread operator, mengekuarkan isi array, array_merge() menggabungkan isi array, jadi mengeluarkan dari dimensi kedua, digabungkan ke dimensi pertama
+        // dd($seatsFormat);
+        return view('schedule.show-seats', compact('schedule', 'hour', 'seatsFormat'));
     }
 }

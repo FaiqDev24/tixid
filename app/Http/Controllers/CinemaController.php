@@ -132,8 +132,16 @@ class CinemaController extends Controller
      */
     public function destroy($id)
     {
-        Cinema::where('id', $id)->delete();
-        return redirect()->route('admin.cinemas.index')->with('success', 'Berhasil menghapus data!');
+        $schedules = Schedule::where('cinema_id', $id)->count();
+        if ($schedules) {
+            return redirect()->route('admin.cinemas.index')->with('error', 'Tidak dapat menghapus data bioskop! Data tertaut dengan jadwal tayang');
+        }
+        $deleteData = Cinema::where('id', $id)->delete();
+        if ($deleteData) {
+            return redirect()->route('admin.cinemas.index')->with('success', 'Berhasil menghapus data bioskop!');
+        } else {
+            return redirect()->back()->with('failed', 'Gagal! silahkan coba lagi');
+        }
     }
 
     public function export()

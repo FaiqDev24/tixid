@@ -24,6 +24,7 @@ Route::middleware('isUser')->group(function(){
     Route::get('/schedules/{scheduleId}/hours/{hourId}', [ScheduleController::class, 'showSeats'])->name('schedules.show-seats');
 
     Route::prefix('/tickets')->name('tickets.')->group(function () {
+        Route::get('/', [TicketController::class, 'index'])->name('index');
         Route::post('/store', [TicketController::class, 'store'])->name('store');
         Route::get('/{ticket_id}/order', [TicketController::class, 'orderPage'])->name('order');
         Route::post('/qrcode', [TicketController::class, 'createQrcode'])->name('qrcode');
@@ -40,6 +41,7 @@ Route::middleware('isAdmin')->prefix('/admin')->name('admin.')->group(function (
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
+    Route::get('/tickets/chart', [TicketController::class, 'chart'])->name('tickets.chart');
 
     Route::prefix('/cinemas')->name('cinemas.')->group(function () {
         Route::get('/index', [CinemaController::class, 'index'])->name('index');
@@ -72,6 +74,7 @@ Route::middleware('isAdmin')->prefix('/admin')->name('admin.')->group(function (
     });
 
     Route::prefix('/movies')->name('movies.')->group(function () {
+        Route::get('/chart', [MovieController::class, 'chart'])->name('chart');
         Route::get('/index', [MovieController::class, 'index'])->name('index');
         Route::get('/create', [MovieController::class, 'create'])->name('create');
         Route::post('/store', [MovieController::class, 'store'])->name('store');
